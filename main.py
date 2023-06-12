@@ -57,30 +57,22 @@ async def votos_titulo(titulo: str):
     promedio = pelicula.iloc[0]['vote_average']
     return f"La película {titulo} fue estrenada en el año {anio}. La misma cuenta con un total de {votos} valoraciones, con un promedio de {promedio}"
 
-#Ingresas la productora, retornando la ganancia total y la cantidad de peliculas que produjeron
-@app.get('/productoras/{productora}')
-def productoras(productora:str):
-    # Filtrar el dataframe por la productora dada
-    df_productora = df[df['production_companies'].apply(lambda x: productora in x)]
-    # Calcular la cantidad de películas y la ganancia total
-    cantidad = len(df_productora)
-    ganancia_total = df_productora['revenue'].sum()
-    return {'productora':productora, 'ganancia_total':ganancia_total, 'cantidad':cantidad}
+#Se ingresa el nombre de un actor debiendo devolver el éxito del mismo medido a través del retorno. Además, la cantidad de películas que en las que ha participado y el promedio de retorno
+@app.get('/get_actor/{nombre_actor}')
+async def get_actor(nombre_actor: str):
+    actor_df = df[df['cast'].str.contains(nombre_actor)]
+    total_return = actor_df['return'].sum()
+    avg_return = actor_df['return'].mean()
+    num_movies = len(actor_df)
+    return f"El actor {nombre_actor} ha participado de {num_movies} cantidad de filmaciones, el mismo ha conseguido un retorno de {total_return} con un promedio de {avg_return} por filmación"
 
-#Ingresas la pelicula, retornando la inversion, la ganancia, el retorno y el año en el que se lanzo
-@app.get('/retorno/{pelicula}')
-def retorno(pelicula:str):
-    # Filtrar el dataframe por el título dado
-    df_pelicula = df[df['title'] == pelicula]
-    # Extraer la inversión, la ganancia, el retorno y el año de lanzamiento
-    inversion = df_pelicula['budget'].iloc[0]
-    ganancia = df_pelicula['revenue'].iloc[0]
-    retorno = df_pelicula['return'].iloc[0]
-    año = int(df_pelicula['release_year'].iloc[0])
-    response_data = {'pelicula':pelicula, 'inversion':inversion, 'ganancia':ganancia, 'retorno':retorno,'año':año}
-    response_json = json.dumps(response_data)
-    # Devolver los datos como una respuesta JSON
-    return JSONResponse(content=response_json)
+#Se ingresa el nombre de un director debiendo devolver el éxito del mismo medido a través del retorno. Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma.
+@app.get('/get_director/{nombre_director}')
+async def get_director(nombre_director: str):
+    director_df = df[df['director'] == nombre_director]
+    total_return = director_df['return'].sum()
+    movies = director_df[['title', 'release_date', 'return', 'budget', 'revenue']].to_dict('records')
+    return {'director': nombre_director, 'total_return': total_return, 'movies': movies}
 
 #ML
 #@app.get('/recomendacion/{titulo}')

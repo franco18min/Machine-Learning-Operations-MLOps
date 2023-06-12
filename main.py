@@ -4,7 +4,7 @@ from fastapi import FastAPI
 import pandas as pd
 from fastapi.responses import JSONResponse
 import json
-#from model import recomendacion
+from model import recomendacion
 
 #Se ingresa el mes en español y la funcion retorna la cantidad de peliculas que se estrenaron ese mes 
 app= FastAPI(tittle = 'Proyecto MLOPS', description = 'proyecto Machine Learning Operations')
@@ -75,7 +75,7 @@ async def get_director(nombre_director: str):
     return {'director': nombre_director, 'total_return': total_return, 'movies': movies}
 
 #ML
-#@app.get('/recomendacion/{titulo}')
-#def recomendacion_pelicula(titulo: str):
-    #recomendaciones = recomendacion(titulo)
-    #return {"recomendaciones": recomendaciones}
+@app.get('/recomendacion/{titulo}')
+def recomendar_peliculas(titulo: str):
+    peliculas_similares = recomendacion(titulo)
+    return peliculas_similares

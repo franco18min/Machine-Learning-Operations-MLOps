@@ -1,33 +1,27 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.neighbors import NearestNeighbors
-import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics.pairwise import cosine_similarity
 
-# Leer el archivo CSV con las columnas seleccionadas y limpias
-df_selected = pd.read_csv(r'movies_dataset_ml.csv')
-
-# Manejo de valores nulos en la columna "title"
-df_selected['title'] = df_selected['title'].fillna('')
-
-# Crear el vectorizador TF-IDF y transformar los títulos de las películas
-tfidf = TfidfVectorizer(stop_words='english')
-tfidf_matrix = tfidf.fit_transform(df_selected['title'].astype('U'))
-
-# Crear el modelo Nearest Neighbors y ajustarlo con la matriz TF-IDF
-nn_model = NearestNeighbors(metric='cosine')
-nn_model.fit(tfidf_matrix)
-
-def recomendacion(title, num_recomendaciones=5):
-    # Transformar el título de la película en una matriz TF-IDF
-    title_tfidf = tfidf.transform([title])
-
-    # Encontrar los índices y distancias de las películas más similares
-    _, indices = nn_model.kneighbors(title_tfidf, n_neighbors=num_recomendaciones+1)
-
-    # Obtener los índices de las películas (excluyendo la película de consulta)
-    movie_indices = indices.flatten()[1:]
-
-    # Obtener los títulos de las películas recomendadas
-    recomendaciones = df_selected['title'].iloc[movie_indices].tolist()
-
-    return recomendaciones
+def recomendacion(titulo):
+    # Leer el conjunto de datos
+    df = pd.read_csv(r'movies_dataset_ml.csv')
+    
+    # Seleccionar las características a utilizar
+    caracteristicas = ['budget', 'revenue', 'vote_average', 'popularity']
+    X = df[caracteristicas]
+    
+    # Normalizar las características
+    scaler = MinMaxScaler()
+    X_norm = scaler.fit_transform(X)
+    
+    # Obtener el índice de la película ingresada
+    idx = df[df['title'] == titulo].index[0]
+    
+    # Calcular la similitud del coseno con el resto de las películas
+    similitudes = cosine_similarity(X_norm[idx].reshape(1, -1), X_norm)[0]
+    
+    # Ordenar las películas por similitud y seleccionar las 5 más similares
+    indices_similares = similitudes.argsort()[::-1][1:6]
+    peliculas_similares = df.iloc[indices_similares]['title'].tolist()
+    
+    return peliculas_similares

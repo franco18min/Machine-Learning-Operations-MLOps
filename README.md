@@ -3,7 +3,7 @@
 ## Introduccion 
 <p align="justify">
 
-Mi proyecto de MLops enginner, donde trabajo con la transformacion de datos (ETL),Desarrollo de API consumiendo el dataset transformado para luego hacer deploy con render, con al analisis exploratorio de datos (EDA) para finalmente hacer las recomendaciones mediante machine learning
+Mi proyecto de MLops enginner, donde trabajo en un dataset de peliculas en la que voy a realzar la transformacion de datos (ETL),Desarrollo de API consumiendo el dataset transformado para luego hacer deploy con render, con al analisis exploratorio de datos (EDA) para finalmente hacer las recomendaciones mediante machine learning
 
 </p>
 
@@ -38,23 +38,24 @@ Mi proyecto de MLops enginner, donde trabajo con la transformacion de datos (ETL
 
 - Crear la columna con el retorno de inversión, llamada return con los campos revenue y budget, dividiendo estas dos últimas revenue / budget, cuando no hay datos disponibles para calcularlo, deberá tomar el valor 0.
 
-- Eliminar las columnas que no serán utilizadas, video,imdb_id,adult,original_title,vote_count,poster_path y homepage
+- Eliminar las columnas que no serán utilizadas, video,imdb_id,adult,original_title,poster_path y homepage
 
 ## Funciones API
 
 Funciones usadas para mi API
 
-- Se ingresa el mes y la funcion retorna la cantidad de peliculas que se estrenaron ese mes 
+- Se ingresa el mes en español y la funcion retorna la cantidad de peliculas que se estrenaron ese mes 
 
-- Se ingresa el dia y la funcion retorna la cantidad de peliculas que se estrenaron ese dia
+- Se ingresa el dia en español y la funcion retorna la cantidad de peliculas que se estrenaron ese dia
 
-- Se ingresa la franquicia, retornando la cantidad de peliculas, ganancia total y promedio
+- Se ingresa el título de una filmación esperando como respuesta el título, el año de estreno y el score.
 
-- Ingresas el pais, retornando la cantidad de peliculas producidas en el mismo
+- Se ingresa el título de una filmación esperando como respuesta el título, la cantidad de votos y el valor promedio de las votaciones.
 
-- Ingresas la productora, retornando la ganancia total y la cantidad de peliculas que produjeron
+- Se ingresa el nombre de un actor debiendo devolver el éxito del mismo medido a través del retorno. Además, la cantidad de películas que en las que ha participado y el promedio de retorno
 
-- Ingresas la pelicula, retornando la inversion, la ganancia, el retorno y el año en el que se lanzo
+- Se ingresa el nombre de un director debiendo devolver el éxito del mismo medido a través del retorno. Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma.
+
 
 ## EDA
 

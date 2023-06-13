@@ -1,27 +1,35 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-def recomendacion(titulo):
-    # Leer el conjunto de datos
-    df = pd.read_csv(r'movies_dataset_ml.csv')
-    
-    # Seleccionar las características a utilizar
-    caracteristicas = ['budget', 'revenue', 'vote_average', 'popularity']
-    X = df[caracteristicas]
-    
-    # Normalizar las características
-    scaler = MinMaxScaler()
-    X_norm = scaler.fit_transform(X)
-    
-    # Obtener el índice de la película ingresada
+df = pd.read_csv(r'movies_dataset_ml.csv')
+
+def recomendacion(titulo:str):
+    '''Ingresas un nombre de pelicula y te recomienda las similares en una lista'''
+
+    titulo = titulo.title()
+    # Eliminar valores nulos en el DataFrame
+    df.dropna(subset=['title'], inplace=True)
+
+    # Crear vectorizador TF-IDF
+    vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=5, stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(df['title'])
+
+    # Crear matriz de similitud dispersa
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix, dense_output=False)
+    # Obtener índice de película correspondiente al título
     idx = df[df['title'] == titulo].index[0]
     
-    # Calcular la similitud del coseno con el resto de las películas
-    similitudes = cosine_similarity(X_norm[idx].reshape(1, -1), X_norm)[0]
+    # Obtener puntajes de similitud de película correspondiente al índice
+    sim_scores = list(enumerate(cosine_sim[idx].toarray().ravel()))
     
-    # Ordenar las películas por similitud y seleccionar las 5 más similares
-    indices_similares = similitudes.argsort()[::-1][1:6]
-    peliculas_similares = df.iloc[indices_similares]['title'].tolist()
+    # Ordenar películas por puntaje de similitud
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
     
-    return peliculas_similares
+    # Obtener índices de las 5 películas más similares
+    sim_scores = sim_scores[1:6]
+    movie_indices = [i[0] for i in sim_scores]
+    
+    # Devolver lista de los 5 títulos de películas más similares
+    return df['title'].iloc[movie_indices].tolist()

@@ -10,9 +10,9 @@ app= FastAPI(tittle = 'Proyecto MLOPS', description = 'proyecto Machine Learning
 df = pd.read_csv(r'steam_games.csv')
 
 @app.get("/genero")
-async def genero(Año: str):
+async def genero(Año: int):
     # Aquí va tu código para obtener los 5 géneros más vendidos en el orden correspondiente
-    df_filtered = df[df["release_year"].str.contains(Año)]
+    df_filtered = df[df["release_year"].int.contains(Año)]
     top_genres = df_filtered["genre"].value_counts().head(5).index.tolist()
     return top_genres
 

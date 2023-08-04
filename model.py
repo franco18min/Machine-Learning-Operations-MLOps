@@ -1,35 +1,47 @@
+#Importamos librerias
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import TfidfVectorizer
 
-df = pd.read_csv(r'movies_dataset_ml.csv')
+###################### Funcion para predecir el precio del juego y calcular RMSE ######################
 
-def recomendacion(titulo:str):
-    '''Ingresas un nombre de pelicula y te recomienda las similares en una lista'''
+def prediction(release_year: int, earlyaccess: bool, metascore: float):
 
-    titulo = titulo.title()
-    # Eliminar valores nulos en el DataFrame
-    df.dropna(subset=['title'], inplace=True)
+    #Leemos el csv guardado
+    df_limpio = pd.read_csv(r'steam_games.csv')
 
-    # Crear vectorizador TF-IDF
-    vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=5, stop_words='english')
-    tfidf_matrix = vectorizer.fit_transform(df['title'])
+    # Selecciono las características y la variable objetivo
+    X = df_limpio[['release_year', 'early_access', 'metascore']]
+    y = df_limpio['price']
 
-    # Crear matriz de similitud dispersa
-    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix, dense_output=False)
-    # Obtener índice de película correspondiente al título
-    idx = df[df['title'] == titulo].index[0]
+    # Elimino filas con valores faltantes en las características
+    X = X.dropna()
+    y = y[X.index]
+
+    # Codifico variables categóricas
+    X = pd.get_dummies(X)
+
+    # Divido el conjunto de datos en conjuntos de entrenamiento y prueba
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    # Entrenaminto del modelo
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    # Evaluo el modelo
+    y_pred = model.predict(X_test)
+    rmse = mean_squared_error(y_test, y_pred, squared=False)
+
+    # Codificar las características
+    features = pd.DataFrame({'release_year': [release_year], 'early_access': [earlyaccess], 'metascore': [metascore]})
+    features = pd.get_dummies(features)
     
-    # Obtener puntajes de similitud de película correspondiente al índice
-    sim_scores = list(enumerate(cosine_sim[idx].toarray().ravel()))
+    # Asegurarse de que las características estén en el mismo orden que en el modelo entrenado
+    features = features.reindex(columns=X.columns, fill_value=0)
     
-    # Ordenar películas por puntaje de similitud
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    # Hacer la predicción
+    price = model.predict(features)
     
-    # Obtener índices de las 5 películas más similares
-    sim_scores = sim_scores[1:6]
-    movie_indices = [i[0] for i in sim_scores]
-    
-    # Devolver lista de los 5 títulos de películas más similares
-    return df['title'].iloc[movie_indices].tolist()
+    return {'price': price[0], 'rmse': rmse}

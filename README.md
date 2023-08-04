@@ -28,33 +28,23 @@ Mi proyecto de MLops enginner, donde trabajo en un dataset de peliculas en la qu
 
 ## ETL
 
-- Algunos campos, como belongs_to_collection, production_companies y otros están anidados, ¡deberán desanidarlos para poder y unirlos al dataset de nuevo hacer alguna de las consultas de la API! O bien buscar la manera de acceder a esos datos sin desanidarlos.
-
-- Los valores nulos de los campos revenue, budget deben ser rellenados por el número 0.
-
-- Los valores nulos del campo release date deben eliminarse.
-
-- De haber fechas, deberán tener el formato AAAA-mm-dd, además deberán crear la columna release_year donde extraerán el año de la fecha de estreno.
-
-- Crear la columna con el retorno de inversión, llamada return con los campos revenue y budget, dividiendo estas dos últimas revenue / budget, cuando no hay datos disponibles para calcularlo, deberá tomar el valor 0.
-
-- Eliminar las columnas que no serán utilizadas, video,imdb_id,adult,original_title,poster_path y homepage
+- Las transformaciones fueron realizas en la parte del eda ya que el trabajo no pidio algo en especifico
 
 ## Funciones API
 
 Funciones usadas para mi API
 
-- Se ingresa el mes en español y la funcion retorna la cantidad de peliculas que se estrenaron ese mes 
+- Se ingresa un año y devuelve una lista con los 5 géneros más vendidos en el orden correspondiente.
 
-- Se ingresa el dia en español y la funcion retorna la cantidad de peliculas que se estrenaron ese dia
+- Se ingresa un año y devuelve una lista con los juegos lanzados en el año.
 
-- Se ingresa el título de una filmación esperando como respuesta el título, el año de estreno y el score.
+- Se ingresa un año y devuelve una lista con los 5 specs que más se repiten en el mismo en el orden correspondiente.
 
-- Se ingresa el título de una filmación esperando como respuesta el título, la cantidad de votos y el valor promedio de las votaciones.
+- Cantidad de juegos lanzados en un año con early access.
 
-- Se ingresa el nombre de un actor debiendo devolver el éxito del mismo medido a través del retorno. Además, la cantidad de películas que en las que ha participado y el promedio de retorno
+- Según el año de lanzamiento, se devuelve una lista con la cantidad de registros que se encuentren categorizados con un análisis de sentimiento.
 
-- Se ingresa el nombre de un director debiendo devolver el éxito del mismo medido a través del retorno. Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma.
+- Top 5 juegos según año con mayor metascore.
 
 
 ## EDA
@@ -64,7 +54,7 @@ Se realizo una exploracion sobre los datos para encontrar observaciones y tambie
 
 ## Sistema de recomendacion
 
-Este sistema de recomendación utiliza el contenido de los títulos de las películas para encontrar películas similares y hacer recomendaciones 
+Este sistema de recomendación utiliza el contenido de año de lanzamiento, metascore y acceso anticipado para predecir el precio de un videojuego y calcular ademas el rsme
 Aclaro que la api consume la funcion para realizar la prueba
 
 

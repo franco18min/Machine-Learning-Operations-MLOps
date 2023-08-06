@@ -22,12 +22,12 @@ df = pd.DataFrame(rows)
 
 #FUNCIONES
 
-#Se ingresa un año y devuelve una lista con los 5 géneros más vendidos en el orden correspondiente.
+#Se ingresa un año y devuelve una lista con los 5 géneros más lanzados en el orden correspondiente.
 @app.get("/genres/{generos}")
 def genres(year: str):   
     mask = df['release_date'].str.startswith(year, na=False)
     df_year = df[mask]
-    top_genres = df_year['genres'].explode().value_counts().head(5).index.tolist()
+    top_genres = df_year['genres'].explode().value_counts().head(5).to_dict()
     return {"top_genres": top_genres}
 
 #Se ingresa un año y devuelve una lista con los juegos lanzados en el año.
@@ -43,7 +43,7 @@ def games(year: str):
 def specs(year: str):   
     mask = df['release_date'].str.startswith(year, na=False)
     df_year = df[mask]
-    top_specs = df_year['specs'].explode().value_counts().head(5).index.tolist()
+    top_specs = df_year['specs'].explode().value_counts().head(5).to_dict()
     return {"top_specs": top_specs}
 
 #Cantidad de juegos lanzados en un año con early access.
@@ -65,9 +65,10 @@ def sentiment(year: str):
 #Top 5 juegos según año con mayor metascore.
 @app.get('/top_games/{top_juegos}')
 def top_games(year: str):
+    #df = pd.read_csv('steam_games.csv')
     mask = df['release_date'].str.startswith(year, na=False)
     df_year = df[mask]
-    top_games = df_year.sort_values(by='metascore', ascending=False).head(5)['title'].tolist()
+    top_games = df_year.sort_values(by='metascore', ascending=False).head(5)[['title', 'metascore']].to_dict('records')
     return {"top_games": top_games}
 
 #ML

@@ -3,7 +3,7 @@
 ## Introduccion 
 <p align="justify">
 
-Mi proyecto de MLops enginner, donde trabajo en un dataset de videojuegos de steam en la que voy a realzar la transformacion de datos (ETL),Desarrollo de API consumiendo el dataset transformado para luego hacer deploy con render, con el analisis exploratorio de datos (EDA) para finalmente hacer las recomendaciones mediante machine learning
+Mi proyecto de MLops enginner, donde trabajo en un dataset de videojuegos de steam en la que realice las transformaciones de datos (ETL),Desarrollo de funciones para mi API consumiendo el dataset transformado para luego hacer deploy con render, luego realice el analisis exploratorio de datos (EDA) para finalmente hacer las recomendaciones mediante machine learning
 
 </p>
 
@@ -24,11 +24,10 @@ Mi proyecto de MLops enginner, donde trabajo en un dataset de videojuegos de ste
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 ![Markdown](https://img.shields.io/badge/markdown-%23000000.svg?style=for-the-badge&logo=markdown&logoColor=white)
 - seaborn 
-- rake-nltk
 
 ## ETL
 
-- Las transformaciones fueron realizas en la parte del eda ya que el trabajo no pidio algo en especifico
+- Las transformaciones fueron realizadas en la parte del EDA ya que el trabajo no pidio algo en especifico
 
 ## Funciones API
 
@@ -61,5 +60,3 @@ Aclaro que la api consume la funcion para realizar la prueba
 ## Deployment
 
  El deploy fue mediante render
-
-## Link al video explicativo

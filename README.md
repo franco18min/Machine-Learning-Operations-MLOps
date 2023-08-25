@@ -3,7 +3,7 @@
 ## Introduccion 
 <p align="justify">
 
-Mi proyecto de MLops enginner, donde trabajo en un dataset de peliculas en la que voy a realzar la transformacion de datos (ETL),Desarrollo de API consumiendo el dataset transformado para luego hacer deploy con render, con al analisis exploratorio de datos (EDA) para finalmente hacer las recomendaciones mediante machine learning
+Mi proyecto de MLops enginner, donde trabajo en un dataset de videojuegos de steam en la que voy a realzar la transformacion de datos (ETL),Desarrollo de API consumiendo el dataset transformado para luego hacer deploy con render, con el analisis exploratorio de datos (EDA) para finalmente hacer las recomendaciones mediante machine learning
 
 </p>
 

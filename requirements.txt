@@ -6,3 +6,6 @@ gunicorn
 matplotlib
 ydata-profiling
 scikit-learn
+pytest
+pytest-cov
+httpx

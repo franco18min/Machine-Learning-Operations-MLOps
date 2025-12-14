@@ -1,0 +1,5 @@
+outs:
+- md5: 52cfaed59dbd641d885133d19cfcc508
+  size: 21276883
+  hash: md5
+  path: steam_games.json

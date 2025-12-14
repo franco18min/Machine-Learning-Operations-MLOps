@@ -1,0 +1,5 @@
+outs:
+- md5: 91f0fa0f41e38ebbcb962457dd9ad37c
+  size: 496375
+  hash: md5
+  path: steam_games.csv

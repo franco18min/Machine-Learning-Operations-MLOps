@@ -152,6 +152,14 @@ cython_debug/
 .vscode/
 .idea/
 
+# AWS Lambda artifacts
+*.zip
+aws_lambda/*/lambda_deployment.zip
+aws_lambda/*/api_deployment.zip
+aws_lambda/*/package/
+aws_lambda/*/__pycache__/
+
 # Large files
 steam_games.json
 steam_games.csv
+

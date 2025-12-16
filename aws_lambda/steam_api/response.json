@@ -1,0 +1,1 @@
+{"statusCode": 500, "body": "{\"error\": \"Float types are not supported. Use Decimal types instead.\", \"timestamp\": \"2025-12-16T03:32:32.159792\"}"}

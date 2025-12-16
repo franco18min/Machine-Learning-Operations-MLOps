@@ -1,0 +1,19 @@
+pipeline:
+  name: "steam_games_etl"
+  schedule_interval: "@daily"
+  catchup: false
+
+etl:
+  extract:
+    source_type: "json"
+    file_path: "steam_games.json"
+  transform:
+    clean_nulls: true
+    normalize_dates: true
+  load:
+    target_type: "dataframe_cache" # Or database in a real scenario
+
+notifications:
+  email_on_failure: true
+  email_on_retry: false
+  alert_email: "admin@example.com"

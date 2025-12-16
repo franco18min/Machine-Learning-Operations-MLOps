@@ -1,4 +1,4 @@
-﻿fastapi
+﻿﻿fastapi
 numpy
 pandas
 uvicorn
@@ -6,6 +6,6 @@ gunicorn
 matplotlib
 ydata-profiling
 scikit-learn
-pytest
-pytest-cov
-httpx
+apache-airflow
+dvc
+great_expectations

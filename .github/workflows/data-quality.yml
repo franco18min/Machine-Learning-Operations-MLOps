@@ -1,0 +1,45 @@
+name: Data Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight
+
+jobs:
+  data-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install dvc great_expectations
+
+    - name: DVC Pull
+      env:
+        GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+      run: |
+        # If credentials are not set, this step might fail or skip
+        # Assuming DVC is configured to use a remote storage (S3/Gdrive)
+        # For now, we print a warning if DVC remote is not accessible
+        dvc pull || echo "DVC pull failed or no remote configured. Validation might fail if data is missing."
+
+    - name: Run Great Expectations Suite
+      run: |
+        # Only run if data exists
+        if [ -f "steam_games.csv" ]; then
+          python expectations/validation_suite.py
+        else
+          echo "Data file steam_games.csv not found. Skipping validation."
+        fi

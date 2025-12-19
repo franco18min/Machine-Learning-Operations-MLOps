@@ -1,0 +1,21 @@
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311']
+exclude = '''
+/(
+    \.git
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | aws_lambda/steam_etl/boto3
+  | aws_lambda/steam_etl/botocore
+  | aws_lambda/steam_etl/s3transfer
+  | aws_lambda/steam_etl/urllib3
+  | aws_lambda/steam_etl/six.py
+  | aws_lambda/steam_api/boto3
+  | aws_lambda/steam_api/botocore
+)/
+'''

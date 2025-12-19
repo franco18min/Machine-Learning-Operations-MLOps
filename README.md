@@ -11,9 +11,9 @@
 - [Pipeline ETL & MLOps](#pipeline-etl--mlops)
 - [Funciones de Datos (API)](#funciones-de-datos-api)
 - [Stack Tecnológico](#stack-tecnológico)
-- [Calidad de Datos](#calidad-de-datos)
+- [Verificación End-to-End](#verificación-end-to-end)
+- [Seguridad (Demo)](#seguridad-demo)
 - [Guía de Instalación](#guía-de-instalación)
-- [Documentación AWS](#documentación-aws)
 
 ---
 
@@ -34,13 +34,15 @@ La solución implementa un ciclo de vida completo de datos (End-to-End), migrand
 
 ## 📈 Métricas de Rendimiento (KPIs)
 
-| Métrica | Valor Actual |
-|---------|--------------|
-| **Volumen de Datos** | ~30k registros (JSON), ~3k registros (CSV) |
-| **Tiempo de Pipeline ETL** | ~2.5s (Local) / ~45s (AWS Lambda Cold Start) |
-| **Uptime API** | 99.99% (AWS Lambda Function URL) |
-| **Costo Operativo** | **$0.00 / mes** (AWS Free Tier) |
-| **Tasa de Éxito Transformaciones** | > 95% (registros válidos) |
+> **Nota**: Los valores son estimaciones basadas en cargas de prueba. El costo real dependerá del volumen de invocaciones y datos procesados.
+
+| Métrica | Valor Estimado | Supuestos |
+|---------|----------------|----------|
+| **Volumen de Datos** | ~30k registros (JSON), ~3k registros (CSV) | Dataset actual de prueba |
+| **Tiempo de Pipeline ETL** | ~2.5s (Local) / ~45s (AWS Lambda Cold Start) | Cold start incluye carga de Pandas Layer |
+| **Uptime API** | Objetivo: 99.9%+ | Basado en SLA de AWS Lambda |
+| **Costo Operativo** | **~$0.00 / mes** | Bajo supuesto de <1,000 requests/mes (Free Tier) |
+| **Tasa de Éxito Transformaciones** | > 95% (registros válidos) | Con validación Great Expectations |
 
 ---
 
@@ -103,7 +105,7 @@ La API está desplegada en AWS Lambda y es accesible públicamente.
 | `/?year=2023` | Juegos por año | `curl /?year=2023` |
 | `/?genre=Action` | Juegos por género | `curl /?genre=Action` |
 
-Ver documentación completa en [API_DOCUMENTATION.md](./API_DOCUMENTATION.md).
+Ver documentación completa en [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) y arquitectura AWS en [AWS_ARCHITECTURE.md](./AWS_ARCHITECTURE.md).
 
 ---
 
@@ -117,6 +119,78 @@ Ver documentación completa en [API_DOCUMENTATION.md](./API_DOCUMENTATION.md).
 | **Data Versioning** | ![DVC](https://img.shields.io/badge/DVC-945DD6?style=for-the-badge&logo=dvc&logoColor=white) |
 | **Lenguaje** | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) 3.11 |
 | **CI/CD** | ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white) |
+
+---
+
+## ✅ Verificación End-to-End
+
+Pasos para validar el pipeline completo desde carga hasta consulta:
+
+### 1. Cargar Dataset (ETL)
+```powershell
+# Desplegar función ETL (requiere AWS CLI configurado)
+cd aws_lambda/steam_etl
+.\deploy.ps1 -RoleArn "arn:aws:iam::TU_CUENTA:role/lambda-dynamodb-role"
+
+# Invocar carga de datos
+aws lambda invoke --function-name steam-etl-processor response.json
+```
+
+**Resultado Esperado**: `statusCode: 200` y logs indicando "X items cargados".
+
+### 2. Consultar Endpoints
+```bash
+# Health Check
+curl "https://telly66645uoeanoolnr3l4x2u0aaevi.lambda-url.us-east-1.on.aws/"
+
+# Top 10 juegos más caros
+curl "https://telly66645uoeanoolnr3l4x2u0aaevi.lambda-url.us-east-1.on.aws/?top=true"
+```
+
+**Resultado Esperado**: JSON con lista de juegos y campos `game_id`, `name`, `price`.
+
+### 3. Validar en DynamoDB
+```powershell
+# Contar items en tabla
+aws dynamodb scan --table-name steam_games --select COUNT
+```
+
+**Resultado Esperado**: `Count` debe coincidir con el número de registros cargados (~3,000 items).
+
+---
+
+## 🔒 Seguridad (Demo)
+
+> [!WARNING]
+> **Esta API está configurada para acceso público (AuthType: NONE) únicamente con fines demostrativos.**
+
+### Estado Actual
+- **Autenticación**: Ninguna (`Auth: NONE` en Lambda Function URL)
+- **CORS**: Permite todos los orígenes (`*`)
+- **Rate Limiting**: Ninguno configurado
+
+### Hardening Recomendado para Producción
+
+1. **Habilitar Autenticación IAM**:
+   ```bash
+   aws lambda update-function-url-config \
+     --function-name steam-api-processor \
+     --auth-type AWS_IAM
+   ```
+
+2. **Implementar API Gateway** en lugar de Function URL para:
+   - Rate Limiting (Throttling)
+   - API Keys
+   - WAF (Web Application Firewall)
+
+3. **Restringir CORS** a dominios específicos:
+   ```python
+   headers = {
+       'Access-Control-Allow-Origin': 'https://tu-dominio.com'
+   }
+   ```
+
+**Documentación**: [AWS Lambda Function URLs - Security](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html)
 
 ---
 
@@ -157,9 +231,17 @@ python expectations/validation_suite.py
 
 ## 👤 Autor
 
-**Franco Min**  
-Data Engineer | MLOps Enthusiast  
-[GitHub](https://github.com/franco18min)
+<div align="center">
+<img src="https://github.com/franco18min.png" width="120px" style="border-radius: 50%;">
+<h3>Franco Aguilera</h3>
+<p><strong>Data Engineer</strong> | Data Science @ Soy Henry</p>
+<a href="https://www.linkedin.com/in/franco-aguilera-data-engineer/">
+<img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+</a>
+<a href="https://github.com/franco18min">
+<img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+</a>
+</div>
 
 ---
 

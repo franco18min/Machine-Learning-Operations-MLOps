@@ -6,10 +6,13 @@ from src.etl.loader import get_training_data
 from src.etl.transformer import clean_data_for_training
 from src.utils.logging import logger
 
-def train_and_predict_price(release_year: int, early_access: bool, metascore: float) -> dict[str, float]:
+
+def train_and_predict_price(
+    release_year: int, early_access: bool, metascore: float
+) -> dict[str, float]:
     """
     Trains a Linear Regression model on the fly and predicts the price for a given game.
-    
+
     Args:
         release_year (int): The year the game was released.
         early_access (bool): Whether the game is in early access.
@@ -18,15 +21,17 @@ def train_and_predict_price(release_year: int, early_access: bool, metascore: fl
     Returns:
         dict[str, float]: A dictionary containing the predicted price and the RMSE of the model.
     """
-    logger.info(f"Starting prediction for: Year={release_year}, EarlyAccess={early_access}, Metascore={metascore}")
-    
+    logger.info(
+        f"Starting prediction for: Year={release_year}, EarlyAccess={early_access}, Metascore={metascore}"
+    )
+
     try:
         # Load raw data
         df_raw = get_training_data()
-        
+
         # Clean and prepare data
         X, y = clean_data_for_training(df_raw)
-        
+
         # One-Hot Encoding for categorical features (though current features are mostly numeric/bool)
         # pd.get_dummies is used in original code, so we keep it for consistency if X has categoricals.
         # In the original code, X had 'release_year', 'early_access', 'metascore'.
@@ -34,7 +39,9 @@ def train_and_predict_price(release_year: int, early_access: bool, metascore: fl
         X = pd.get_dummies(X)
 
         # Split data
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42
+        )
 
         # Train model
         model = LinearRegression()
@@ -47,12 +54,14 @@ def train_and_predict_price(release_year: int, early_access: bool, metascore: fl
         logger.info(f"Model RMSE: {rmse}")
 
         # Prepare input for prediction
-        input_features = pd.DataFrame({
-            'release_year': [release_year], 
-            'early_access': [early_access], 
-            'metascore': [metascore]
-        })
-        
+        input_features = pd.DataFrame(
+            {
+                "release_year": [release_year],
+                "early_access": [early_access],
+                "metascore": [metascore],
+            }
+        )
+
         # Ensure dummy columns match training data
         input_features = pd.get_dummies(input_features)
         input_features = input_features.reindex(columns=X.columns, fill_value=0)
@@ -61,7 +70,7 @@ def train_and_predict_price(release_year: int, early_access: bool, metascore: fl
         price = model.predict(input_features)[0]
         logger.info(f"Predicted Price: {price}")
 
-        return {'price': float(price), 'rmse': float(rmse)}
+        return {"price": float(price), "rmse": float(rmse)}
 
     except Exception as e:
         logger.error(f"Error in training/prediction process: {e}")

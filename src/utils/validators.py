@@ -1,6 +1,7 @@
 from typing import Any
 import pandas as pd
 
+
 def validate_year(year: str) -> bool:
     """
     Validates if the input string is a valid year format (YYYY).
@@ -12,6 +13,7 @@ def validate_year(year: str) -> bool:
         bool: True if valid, False otherwise.
     """
     return year.isdigit() and len(year) == 4
+
 
 def validate_dataframe(df: pd.DataFrame, required_columns: list[str]) -> bool:
     """

@@ -21,8 +21,20 @@ graph LR
 ### 1. Base de Datos: Amazon DynamoDB
 *   **Tabla**: `steam_games`
 *   **Partition Key**: `game_id` (String)
-*   **Capacidad**: Provisioned (5 RCU / 5 WCU) - Dentro del Free Tier (25 RCU/WCU).
+*   **Capacidad**: **Provisioned (5 RCU / 5 WCU)** - Dentro del Free Tier (25 RCU/WCU).
 *   **Uso**: Almacena los metadatos procesados de los juegos.
+
+#### ¿Por qué Provisioned en lugar de On-Demand?
+- **Costo Predecible**: Para cargas bajas (<1,000 requests/mes), Provisioned es más económico.
+- **Free Tier**: AWS ofrece 25 RCU/WCU gratuitas en modo Provisioned.
+- **Throughput Suficiente**: 5 RCU/WCU soportan ~5 lecturas/segundo (suficiente para demos).
+
+#### Cambiar a On-Demand (si se requiere escalado automático):
+```bash
+aws dynamodb update-table \
+  --table-name steam_games \
+  --billing-mode PAY_PER_REQUEST
+```
 
 ### 2. ETL: AWS Lambda (`steam-etl-processor`)
 *   **Función**: Carga datos masivos desde un CSV empaquetado.

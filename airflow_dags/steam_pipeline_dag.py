@@ -16,37 +16,34 @@ from src.utils.logging import logger
 
 # Default arguments for the DAG
 default_args = {
-    'owner': 'nexus_mlops',
-    'depends_on_past': False,
-    'start_date': days_ago(1),
-    'email': ['admin@example.com'],
-    'email_on_failure': True,
-    'email_on_retry': False,
-    'retries': 3,
-    'retry_delay': timedelta(minutes=5),
+    "owner": "nexus_mlops",
+    "depends_on_past": False,
+    "start_date": days_ago(1),
+    "email": ["admin@example.com"],
+    "email_on_failure": True,
+    "email_on_retry": False,
+    "retries": 3,
+    "retry_delay": timedelta(minutes=5),
 }
 
 # Define the DAG
 with DAG(
-    'steam_games_etl_pipeline',
+    "steam_games_etl_pipeline",
     default_args=default_args,
-    description='ETL pipeline for Steam Games data',
-    schedule_interval='@daily',
+    description="ETL pipeline for Steam Games data",
+    schedule_interval="@daily",
     catchup=False,
-    tags=['etl', 'steam', 'mlops'],
+    tags=["etl", "steam", "mlops"],
 ) as dag:
 
     # 1. Extraction Task
     extract_task = ExtractOperator(
-        task_id='extract_steam_data',
-        source_type='json',
-        file_path='steam_games.json'
+        task_id="extract_steam_data", source_type="json", file_path="steam_games.json"
     )
 
     # 2. Transformation Task
     transform_task = TransformOperator(
-        task_id='transform_steam_data',
-        transformation_type='json_to_df'
+        task_id="transform_steam_data", transformation_type="json_to_df"
     )
 
     # 3. Data Quality Check Task (Simulated)
@@ -57,15 +54,11 @@ with DAG(
         logger.info("Data quality checks passed.")
 
     quality_check_task = PythonOperator(
-        task_id='data_quality_checks',
-        python_callable=check_data_quality
+        task_id="data_quality_checks", python_callable=check_data_quality
     )
 
     # 4. Load Task
-    load_task = LoadOperator(
-        task_id='load_data_to_cache',
-        target='dataframe_cache'
-    )
+    load_task = LoadOperator(task_id="load_data_to_cache", target="dataframe_cache")
 
     # 5. Notification Task
     # Note: EmailOperator requires SMTP configuration in airflow.cfg
@@ -74,9 +67,14 @@ with DAG(
         logger.info("Pipeline completed successfully. Notification sent.")
 
     notification_task = PythonOperator(
-        task_id='notify_success',
-        python_callable=send_success_notification
+        task_id="notify_success", python_callable=send_success_notification
     )
 
     # Define Dependencies
-    extract_task >> transform_task >> quality_check_task >> load_task >> notification_task
+    (
+        extract_task
+        >> transform_task
+        >> quality_check_task
+        >> load_task
+        >> notification_task
+    )

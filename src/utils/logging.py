@@ -1,6 +1,7 @@
 import logging
 import sys
 
+
 def setup_logger(name: str = "mlops_app") -> logging.Logger:
     """
     Sets up a logger with a standard configuration.
@@ -22,8 +23,8 @@ def setup_logger(name: str = "mlops_app") -> logging.Logger:
 
         # Create formatter
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
 
         # Add formatter to handler
@@ -33,5 +34,6 @@ def setup_logger(name: str = "mlops_app") -> logging.Logger:
         logger.addHandler(console_handler)
 
     return logger
+
 
 logger = setup_logger()

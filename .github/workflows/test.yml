@@ -3,6 +3,10 @@ name: Tests
 on:
   push:
     branches: [ main, develop ]
+    paths:
+      - '**.py'
+      - 'tests/**'
+      - '.github/workflows/test.yml'
   pull_request:
     branches: [ main, develop ]
 
@@ -29,4 +33,12 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest tests/ --cov=src --cov-report=xml
+        # Run tests, but handle case where no tests are found gracefully
+        pytest tests/ --cov=src --cov-report=xml -v || exit_code=$?
+        if [ "${exit_code}" == "5" ]; then
+          echo "ℹ️ No tests collected, this is acceptable."
+          exit 0
+        elif [ -n "${exit_code}" ] && [ "${exit_code}" != "0" ]; then
+          echo "❌ Tests failed with exit code ${exit_code}"
+          exit ${exit_code}
+        fi

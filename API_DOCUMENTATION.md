@@ -58,7 +58,7 @@ Filtra juegos lanzados en un año específico.
 ## 🛠️ Arquitectura
 
 *   **Compute**: AWS Lambda (Python 3.11)
-*   **Database**: AWS DynamoDB (On-demand)
+*   **Database**: AWS DynamoDB (Provisioned: 5 RCU / 5 WCU - Free Tier)
 *   **ETL**: Lambda con Pandas Layer (carga desde CSV)
 *   **Infraestructura**: Despliegue automatizado con PowerShell y AWS CLI.
 

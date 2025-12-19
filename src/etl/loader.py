@@ -7,6 +7,7 @@ from src.utils.logging import logger
 # Though for this assignment, keeping it simple.
 _GAMES_DF = None
 
+
 def get_games_dataframe() -> pd.DataFrame:
     """
     Orchestrates the loading and transformation of the games data (JSON).
@@ -26,16 +27,17 @@ def get_games_dataframe() -> pd.DataFrame:
         raw_data = load_json_data()
         df = transform_json_to_dataframe(raw_data)
         _GAMES_DF = df
-        
+
         end_time = pd.Timestamp.now()
         duration = (end_time - start_time).total_seconds()
         logger.info(f"Games data pipeline completed in {duration:.2f} seconds.")
         logger.info(f"Pipeline Success: Loaded {len(df)} records.")
-        
+
         return df
     except Exception as e:
         logger.critical(f"Failed to initialize games data: {e}")
         raise
+
 
 def get_training_data() -> pd.DataFrame:
     """

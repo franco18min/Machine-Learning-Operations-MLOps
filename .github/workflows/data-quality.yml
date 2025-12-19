@@ -31,19 +31,20 @@ jobs:
         pip install dvc great_expectations
 
     - name: DVC Pull (Optional)
+      id: dvc_pull
       continue-on-error: true
       env:
         GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
       run: |
         # DVC pull is optional - credentials may not be configured in CI/CD
-        dvc pull || echo "⚠️ DVC pull failed or no remote configured. Skipping data validation."
+        if dvc pull 2>/dev/null; then
+          echo "data_available=true" >> $GITHUB_OUTPUT
+        else
+          echo "data_available=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ DVC pull failed or no remote configured. Validation will be skipped."
+        fi
 
     - name: Run Great Expectations Suite
-      continue-on-error: true
+      if: steps.dvc_pull.outputs.data_available == 'true'
       run: |
-        # Only run if data exists
-        if [ -f "steam_games.csv" ]; then
-          python expectations/validation_suite.py
-        else
-          echo "ℹ️ Data file steam_games.csv not found. Skipping validation (expected in CI without DVC credentials)."
-        fi
+        python expectations/validation_suite.py

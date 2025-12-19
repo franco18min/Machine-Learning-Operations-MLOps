@@ -32,6 +32,13 @@ jobs:
         if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
 
     - name: Run tests with pytest
-      continue-on-error: true
       run: |
-        pytest tests/ --cov=src --cov-report=xml || echo "⚠️ Some tests failed but continuing CI/CD..."
+        # Run tests, but handle case where no tests are found gracefully
+        pytest tests/ --cov=src --cov-report=xml -v || exit_code=$?
+        if [ "${exit_code}" == "5" ]; then
+          echo "ℹ️ No tests collected, this is acceptable."
+          exit 0
+        elif [ -n "${exit_code}" ] && [ "${exit_code}" != "0" ]; then
+          echo "❌ Tests failed with exit code ${exit_code}"
+          exit ${exit_code}
+        fi

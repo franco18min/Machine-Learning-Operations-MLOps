@@ -1,0 +1,6 @@
+# Optional dependencies for data quality and DVC
+# Install only when needed:  pip install -r requirements_extra.txt
+
+ydata-profiling
+great_expectations
+dvc

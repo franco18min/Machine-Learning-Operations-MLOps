@@ -4,7 +4,4 @@ pandas
 uvicorn
 gunicorn
 matplotlib
-ydata-profiling
 scikit-learn
-dvc
-great_expectations

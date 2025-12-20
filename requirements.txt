@@ -6,6 +6,5 @@ gunicorn
 matplotlib
 ydata-profiling
 scikit-learn
-apache-airflow
 dvc
 great_expectations

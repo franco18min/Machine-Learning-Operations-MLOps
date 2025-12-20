@@ -5,10 +5,14 @@ on:
     branches: [ main, develop ]
     paths:
       - '**.py'
+      - 'requirements*.txt'
       - '**.dvc'
       - 'expectations/**'
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - '**.py'
+      - 'requirements*.txt'
   schedule:
     - cron: '0 0 * * *' # Run daily at midnight
 

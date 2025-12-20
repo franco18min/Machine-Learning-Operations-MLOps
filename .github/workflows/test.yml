@@ -5,10 +5,14 @@ on:
     branches: [ main, develop ]
     paths:
       - '**.py'
+      - 'requirements*.txt'
       - 'tests/**'
       - '.github/workflows/test.yml'
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - '**.py'
+      - 'requirements*.txt'
 
 jobs:
   test:
